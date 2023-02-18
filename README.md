@@ -50,3 +50,7 @@ You can run `./gradlew checkstyleMain` in the integrated terminal of IntelliJ to
 
 We trust that you are familiar with Honor Code of HKUST. If not, refer to
 [this page](https://course.cse.ust.hk/comp3021/#honorcode).
+
+## Contact Us
+
+If you have any question, please contact Chengpeng Wang (cwangch@cse.ust.hk).
