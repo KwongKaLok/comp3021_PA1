@@ -340,26 +340,19 @@ public class MiniMendeleyEngine {
                     continue;
                 }
                 switch (i) {
-                    case 0 -> {
-                        curUser = userInterfaceForUserCreation();
-                    }
-                    case 1 -> {
-                        userInterfaceForPaperSearch(curUser);
-                    }
-                    case 2 -> {
+                    case 0:
+                    	curUser = userInterfaceForUserCreation();
+                    case 1 :
+                    	userInterfaceForPaperSearch(curUser);                    
+                    case 2 :
                         userInterfaceForPaperUpload(curUser);
-                    }
-                    case 3 -> {
+                    case 3 :
                         userInterfaceForPaperDownload(curUser);
-                    }
-                    case 4 -> {
+                    case 4 :
                         userInterfaceForAddLabel(curUser);
-                    }
-                    case 5 -> {
+                    case 5 :
                         userInterfaceForAddComment(curUser);
-                    }
-                    default -> {
-                    }
+                    default:
                 }
                 if (i == 6) break;
             } else {

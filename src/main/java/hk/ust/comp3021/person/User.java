@@ -4,7 +4,7 @@ import hk.ust.comp3021.resource.Comment;
 import hk.ust.comp3021.resource.Label;
 import java.util.*;
 
-public class User {
+public class User extends Person{
     private Date registerDate;
 
     private ArrayList<Comment> userComments;
@@ -13,6 +13,8 @@ public class User {
 
     public User(String id, String name, Date registerDate) {
         //TODO: complete the definition of the constructor
+    	super(id,name);
+    	this.registerDate  =registerDate;    	
     }
 
 
@@ -23,7 +25,13 @@ public class User {
      */
     public ArrayList<Comment> searchCommentByPaperObjID(String id) {
         //TODO: complete the definition of the method ``searchCommentByPaperObjID''
-        return null;
+    	ArrayList<Comment>AllCommentByPaperObjID = new ArrayList<>();
+    	userComments.forEach((comment)->{
+    		if(comment.getCommentObjId() == id) {
+    			AllCommentByPaperObjID.add(comment);
+    		}
+    	});
+        return AllCommentByPaperObjID;
     }
 
 
@@ -34,7 +42,13 @@ public class User {
      */
     public ArrayList<Comment> searchCommentByCommentObjID(String id) {
         //TODO: complete the definition of the method ``searchCommentByCommentObjID''
-        return null;
+    	ArrayList<Comment>AllCommentByCommentObjID = new ArrayList<>();
+    	userComments.forEach((comment)->{
+    		if(comment.getCommentID() == id) {	
+    			AllCommentByCommentObjID.add(comment);
+    		}
+    	});
+        return AllCommentByCommentObjID;
     }
 
 
@@ -45,7 +59,13 @@ public class User {
      */
     public ArrayList<Label> searchLabelByPaperID(String id) {
         //TODO: complete the definition of the method ``searchLabelByPaperID''
-        return null;
+    	ArrayList<Label>AllLabelByPaperID = new ArrayList<>();
+    	userLabels.forEach((label)->{
+    		if(label.getLabelID() == id) {	
+    			AllLabelByPaperID.add(label);
+    		}
+    	});
+        return AllLabelByPaperID;
     }
 
     /**
