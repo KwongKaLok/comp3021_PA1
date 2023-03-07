@@ -1,7 +1,11 @@
 package hk.ust.comp3021.utils;
 
 import hk.ust.comp3021.resource.Paper;
+
+import java.io.File;
+import java.io.PrintWriter;
 import java.util.HashMap;
+import java.util.Map;
 
 public class BibExporter {
     private HashMap<String, Paper> papers;
@@ -25,7 +29,14 @@ public class BibExporter {
 
     public String generate(){
         //TODO: complete the definition of the method `export`
-        
+        String tokenizedString = new String();
+        if(!papers.isEmpty()) {
+        	for(Map.Entry<String, Paper>paper:papers.entrySet()) {
+        		tokenizedString = tokenizedString + paper.getValue().toString();
+        	}
+        	return tokenizedString;
+        }
+        return null;
     }
 
 
@@ -36,6 +47,18 @@ public class BibExporter {
      */
     public void export() {
         //TODO: complete the definition of the method `export`
+    	String tokenizedString;
+    	try {
+    		tokenizedString = generate();
+    		File file = new File(this.bibFile);
+    		if (!file.exists()) {
+    			PrintWriter writer = new PrintWriter(file);
+    			writer.print(tokenizedString);
+    			writer.close();
+    		}
+    	}catch(Exception ex) {
+        	isErr = true;
+        }  
     }
 
 

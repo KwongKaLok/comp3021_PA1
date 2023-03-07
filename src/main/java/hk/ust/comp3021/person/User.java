@@ -44,7 +44,7 @@ public class User extends Person{
         //TODO: complete the definition of the method ``searchCommentByCommentObjID''
     	ArrayList<Comment>AllCommentByCommentObjID = new ArrayList<>();
     	userComments.forEach((comment)->{
-    		if(comment.getCommentID() == id) {	
+    		if(comment.getCommentObjId() == id) {	
     			AllCommentByCommentObjID.add(comment);
     		}
     	});
