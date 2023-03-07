@@ -12,6 +12,8 @@ public class BibExporter {
 
     public BibExporter(HashMap<String, Paper> papers, String bibFile) {
         //TODO: complete the definition of the constructor
+    	this.papers = papers;
+    	this.bibFile = bibFile;
     }
 
 
@@ -23,7 +25,7 @@ public class BibExporter {
 
     public String generate(){
         //TODO: complete the definition of the method `export`
-        return null;
+        
     }
 
 
