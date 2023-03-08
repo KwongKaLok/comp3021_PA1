@@ -6,6 +6,7 @@ import hk.ust.comp3021.person.User;
 import hk.ust.comp3021.resource.Comment;
 import hk.ust.comp3021.resource.Label;
 import hk.ust.comp3021.resource.Paper;
+import hk.ust.comp3021.utils.BibExporter;
 import hk.ust.comp3021.resource.Comment.*;
 import hk.ust.comp3021.action.SearchPaperAction.SearchKind;
 import java.util.*;
@@ -73,7 +74,9 @@ public class MiniMendeleyEngine {
      */
     public User processUserRegister(String id, String name, Date date) {
         //TODO: complete the definition of the method `processUserRegister`
-        return null;
+        User user = new User(id,name,date);
+        users.add(user);
+        return user;
     }
 
     /**
@@ -94,7 +97,28 @@ public class MiniMendeleyEngine {
      */
     public Comment processAddCommentAction(User curUser, AddCommentAction action) {
         //TODO: complete the definition of the method `processAddCommentAction`
-        return null;
+    	actions.add(action);
+    	try {
+    		Comment comment = new Comment("Comment_"+comments.size(),new Date(),action.getCommentStr(),curUser,action.getCommentType(),action.getObjectId());
+        	comments.add(comment);
+        	if(comment.getType()== CommentType.COMMENT_OF_PAPER) {    		
+        			paperBase.get(comment.getCommentObjId()).updateCommentList(comment);
+        		
+        	}else {
+        		for(int i=0;i<comments.size();i++) {
+        			if(comments.get(i).getCommentID()==comment.getCommentObjId()) {
+        				comments.get(i).updateCommentList(comment);
+        				break;
+        			}
+        		}
+        	}
+        	curUser.updateCommentList(comment);
+        	action.setActionResult(true);
+        	return comment;
+    	}catch(Exception e) {
+    		action.setActionResult(false);
+    		return null;
+    	}
     }
 
     /**
@@ -114,7 +138,18 @@ public class MiniMendeleyEngine {
      */
     public Label processAddLabelAction(User curUser, AddLabelAction action) {
         //TODO: complete the definition of the method `processAddLabelAction`
-        return null;
+    	actions.add(action);
+    	try {
+    		Label label = new Label("Label_"+labels.size(),action.getPaperID(),new Date(),action.getLabelStr(),curUser);
+        	labels.add(label);
+        	paperBase.get(label.getPaperID()).updateLabelList(label);
+        	curUser.updateLabelList(label);
+        	action.setActionResult(true);
+        	return label;xx
+    	}catch(Exception e) {
+    		action.setActionResult(false);
+    		return null;
+    	}  	
     }
 
     /**
@@ -130,6 +165,18 @@ public class MiniMendeleyEngine {
      */
     public void processDownloadPaperAction(User curUser, DownloadPaperAction action) {
         //TODO: complete the definition of the method `processDownloadPaperAction`
+    	actions.add(action);
+    	try {
+    		HashMap<String, Paper> targetPapers = new HashMap<>();
+    		action.getPaper().forEach((paperID)->{
+    			targetPapers.put(paperID, paperBase.get(paperID));
+    			BibExporter bibExporter = new BibExporter(targetPapers,action.getDownloadPath());
+    			bibExporter.export();
+    		});
+    		action.setActionResult(true);
+    	}catch(Exception e) {
+    		action.setActionResult(false);
+    	}
     }
 
     /**
@@ -149,6 +196,28 @@ public class MiniMendeleyEngine {
      */
     public void processUploadPaperAction(User curUser, UploadPaperAction action) {
         //TODO: complete the definition of the method `processUploadPaperAction`
+    	actions.add(action);
+    	try {
+    		for(Map.Entry<String, Paper>paper:action.getUploadedPapers().entrySet()) {
+        		paperBase.put(paper.getKey(), paper.getValue());	//Add paper to 'paperBase'
+        		paper.getValue().getAuthors().forEach((author)->{	//Add author to 'researchers'
+        			for (int i=0;i<researchers.size();i++){//Check the author is in 'researchers'
+        				Researcher eachResearcher = researchers.get(i);
+        				if(!eachResearcher.getName().contains(author)) {
+            				Researcher researcher = new Researcher("Researcher_"+researchers.size(),author);
+            				researchers.add(researcher);
+            				researcher.updatePaperList(paper.getValue());        				
+            			}else {
+            				eachResearcher.updatePaperList(paper.getValue());
+            			}    				
+        			};    		
+        			
+        		});
+        	}
+    		action.setActionResult(true);
+    	}catch(Exception e) {
+    		action.setActionResult(false);
+    	}
     }
 
 
@@ -164,7 +233,38 @@ public class MiniMendeleyEngine {
      */
     public ArrayList<Paper> processSearchPaperAction(User curUser, SearchPaperAction action) {
         //TODO: complete the definition of the method `processSearchPaperAction`
-        return null;
+    	actions.add(action);
+    	ArrayList<Paper> paperList = new ArrayList<Paper>();
+        try {
+        	if(action.getKind() == SearchKind.ID) {
+        		for(Map.Entry<String, Paper>paper:paperBase.entrySet()){
+        			if (paper.getValue().getPaperID().contains(action.getSearchContent())) {
+        				paperList.add(paper.getValue());
+        			}
+        		}
+        	}else if(action.getKind() == SearchKind.AUTHOR) {
+        		for(Map.Entry<String, Paper>paper:paperBase.entrySet()){
+        			if (paper.getValue().getAuthors().contains(action.getSearchContent())) {
+        				paperList.add(paper.getValue());
+        			}
+        		}
+        	}else if(action.getKind() == SearchKind.JOURNAL) {
+        		for(Map.Entry<String, Paper>paper:paperBase.entrySet()){
+        			if (paper.getValue().getJournal().contains(action.getSearchContent())) {
+        				paperList.add(paper.getValue());
+        			}
+        		}
+        	}else if(action.getKind() == SearchKind.TITLE) {
+        		for(Map.Entry<String, Paper>paper:paperBase.entrySet()){
+        			if (paper.getValue().getTitle().contains(action.getSearchContent())) {
+        				paperList.add(paper.getValue());
+        			}
+        		}
+        	}
+        	return paperList;
+        }catch(Exception e){
+        	return null;
+        }
     }
 
 

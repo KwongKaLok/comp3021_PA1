@@ -88,7 +88,10 @@ public class Comment {
      * (2) changing the type signature of `public` methods
      * (3) changing the modifiers of the fields and methods, e.g., changing a modifier from "private" to "public"
      */
-    public void yourMethod() {
-
+    public void updateCommentList(Comment comment) {
+    	if (!this.attachedComments.contains(comment)) {
+    		this.attachedComments.add(comment);
+    	}
+    	
     }
 }

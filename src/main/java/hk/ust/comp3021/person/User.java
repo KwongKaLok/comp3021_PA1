@@ -14,7 +14,7 @@ public class User extends Person{
     public User(String id, String name, Date registerDate) {
         //TODO: complete the definition of the constructor
     	super(id,name);
-    	this.registerDate  =registerDate;    	
+    	this.registerDate  = registerDate;    	
     }
 
 
@@ -75,7 +75,10 @@ public class User extends Person{
      * (2) changing the type signature of `public` methods
      * (3) changing the modifiers of the fields and methods, e.g., changing a modifier from "private" to "public"
      */
-    public void yourMethod() {
-
+    public void updateCommentList(Comment comment) {
+    	this.userComments.add(comment);    	
+    }
+    public void updateLabelList(Label label) {
+    	this.userLabels.add(label);    	
     }
 }
