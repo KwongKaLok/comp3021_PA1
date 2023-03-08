@@ -7,6 +7,7 @@ import hk.ust.comp3021.resource.Comment;
 import hk.ust.comp3021.resource.Label;
 import hk.ust.comp3021.resource.Paper;
 import hk.ust.comp3021.utils.BibExporter;
+import hk.ust.comp3021.utils.BibParser;
 import hk.ust.comp3021.resource.Comment.*;
 import hk.ust.comp3021.action.SearchPaperAction.SearchKind;
 import java.util.*;
@@ -97,18 +98,15 @@ public class MiniMendeleyEngine {
      */
     public Comment processAddCommentAction(User curUser, AddCommentAction action) {
         //TODO: complete the definition of the method `processAddCommentAction`
-    	actions.add(action);
     	try {
     		Comment comment = new Comment("Comment_"+comments.size(),new Date(),action.getCommentStr(),curUser,action.getCommentType(),action.getObjectId());
         	comments.add(comment);
         	if(comment.getType()== CommentType.COMMENT_OF_PAPER) {    		
         			paperBase.get(comment.getCommentObjId()).updateCommentList(comment);
-        		
         	}else {
         		for(int i=0;i<comments.size();i++) {
         			if(comments.get(i).getCommentID()==comment.getCommentObjId()) {
         				comments.get(i).updateCommentList(comment);
-        				break;
         			}
         		}
         	}
@@ -118,6 +116,8 @@ public class MiniMendeleyEngine {
     	}catch(Exception e) {
     		action.setActionResult(false);
     		return null;
+    	}finally {
+    		actions.add(action);
     	}
     }
 
@@ -138,18 +138,19 @@ public class MiniMendeleyEngine {
      */
     public Label processAddLabelAction(User curUser, AddLabelAction action) {
         //TODO: complete the definition of the method `processAddLabelAction`
-    	actions.add(action);
     	try {
     		Label label = new Label("Label_"+labels.size(),action.getPaperID(),new Date(),action.getLabelStr(),curUser);
         	labels.add(label);
         	paperBase.get(label.getPaperID()).updateLabelList(label);
         	curUser.updateLabelList(label);
         	action.setActionResult(true);
-        	return label;xx
+        	return label;
     	}catch(Exception e) {
     		action.setActionResult(false);
     		return null;
-    	}  	
+    	}finally {
+    		actions.add(action);
+    	}
     }
 
     /**
@@ -164,18 +165,22 @@ public class MiniMendeleyEngine {
      * @param action: DownloadPaperAction action
      */
     public void processDownloadPaperAction(User curUser, DownloadPaperAction action) {
-        //TODO: complete the definition of the method `processDownloadPaperAction`
-    	actions.add(action);
+        //TODO: complete the definition of the method `processDownloadPaperAction`   
+    	///Users/kalokkwong/comp_3021/COMP3021-2023Spring-PA1-Skeleton/resources/bibdata/PADownloadTest.bib
     	try {
-    		HashMap<String, Paper> targetPapers = new HashMap<>();
-    		action.getPaper().forEach((paperID)->{
-    			targetPapers.put(paperID, paperBase.get(paperID));
-    			BibExporter bibExporter = new BibExporter(targetPapers,action.getDownloadPath());
-    			bibExporter.export();
+    		HashMap<String, Paper> targetPapersHash = new HashMap<String,Paper>();
+    		action.getPaper().forEach((paperID)->{				
+    			targetPapersHash.put(paperID, paperBase.get(paperID));
     		});
+    		BibExporter bibExporter = new BibExporter(targetPapersHash,action.getDownloadPath());
+			bibExporter.export();
     		action.setActionResult(true);
     	}catch(Exception e) {
     		action.setActionResult(false);
+    		System.out.println(e);
+    		System.out.println("error in processDownloadPaperAction");
+    	}finally {
+    		actions.add(action);
     	}
     }
 
@@ -196,12 +201,16 @@ public class MiniMendeleyEngine {
      */
     public void processUploadPaperAction(User curUser, UploadPaperAction action) {
         //TODO: complete the definition of the method `processUploadPaperAction`
-    	actions.add(action);
     	try {
-    		for(Map.Entry<String, Paper>paper:action.getUploadedPapers().entrySet()) {
-        		paperBase.put(paper.getKey(), paper.getValue());	//Add paper to 'paperBase'
-        		paper.getValue().getAuthors().forEach((author)->{	//Add author to 'researchers'
-        			for (int i=0;i<researchers.size();i++){//Check the author is in 'researchers'
+    		BibParser bibParser = new BibParser(action.getBibfilePath());
+    		bibParser.parse();
+    		HashMap<String, Paper> tempHash = new HashMap<String,Paper>();
+    		tempHash = bibParser.getResult();
+    		paperBase.putAll(tempHash);
+    		for(Map.Entry<String, Paper>paper:tempHash.entrySet()) {
+    			action.getUploadedPapers().put(paper.getKey(), paper.getValue());	//Add paper to 'paperBase'
+        		paper.getValue().getAuthors().forEach((author)->{					//Add author to 'researchers'
+        			for (int i=0;i<researchers.size();i++){							//Check the author is in 'researchers'
         				Researcher eachResearcher = researchers.get(i);
         				if(!eachResearcher.getName().contains(author)) {
             				Researcher researcher = new Researcher("Researcher_"+researchers.size(),author);
@@ -210,13 +219,14 @@ public class MiniMendeleyEngine {
             			}else {
             				eachResearcher.updatePaperList(paper.getValue());
             			}    				
-        			};    		
-        			
+        			};    			
         		});
         	}
     		action.setActionResult(true);
     	}catch(Exception e) {
     		action.setActionResult(false);
+    	}finally {
+    		actions.add(action);
     	}
     }
 
@@ -442,16 +452,22 @@ public class MiniMendeleyEngine {
                 switch (i) {
                     case 0:
                     	curUser = userInterfaceForUserCreation();
+                    	break;
                     case 1 :
-                    	userInterfaceForPaperSearch(curUser);                    
+                    	userInterfaceForPaperSearch(curUser);  
+                    	break;
                     case 2 :
                         userInterfaceForPaperUpload(curUser);
+                        break;
                     case 3 :
                         userInterfaceForPaperDownload(curUser);
+                        break;
                     case 4 :
                         userInterfaceForAddLabel(curUser);
+                        break;
                     case 5 :
                         userInterfaceForAddComment(curUser);
+                        break;
                     default:
                 }
                 if (i == 6) break;

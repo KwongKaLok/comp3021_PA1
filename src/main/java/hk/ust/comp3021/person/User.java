@@ -14,7 +14,9 @@ public class User extends Person{
     public User(String id, String name, Date registerDate) {
         //TODO: complete the definition of the constructor
     	super(id,name);
-    	this.registerDate  = registerDate;    	
+    	this.registerDate  = registerDate;   
+    	this.userComments = new ArrayList<Comment>();
+    	this.userLabels = new ArrayList<Label>();
     }
 
 
@@ -79,6 +81,6 @@ public class User extends Person{
     	this.userComments.add(comment);    	
     }
     public void updateLabelList(Label label) {
-    	this.userLabels.add(label);    	
+    	this.userLabels.add(label);
     }
 }

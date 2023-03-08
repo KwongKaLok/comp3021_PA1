@@ -140,7 +140,6 @@ public class Paper {
             res += "   url = {" + url + "},\n";
         }
         res += "}\n";
-
         return res;
     }
 

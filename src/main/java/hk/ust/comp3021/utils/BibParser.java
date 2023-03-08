@@ -41,12 +41,13 @@ public class BibParser {
      */
     public void parse() {
         //TODO: complete the definition of the method `parse`
+    	result = new HashMap<String, Paper>();
         ArrayList<String> AllFileArrayList = new ArrayList<String>();
         String[] searchKeyWordArray = {"doi = {","author = {","title = {","journal = {","keywords = {","year = {","url = {","abstract = {"};
     	try {
-    		AllFileArrayList = loadBibFile(bibfilePath);
+    		AllFileArrayList = loadBibFile(this.bibfilePath);
     		AllFileArrayList.forEach((eachFile)->{
-    			if (eachFile.contains("@article{")||eachFile.contains("@inproceedings{")||eachFile.contains("@report{")) {
+    			if (eachFile.contains("@")&&!isErr) {
     				String paperKey = eachFile.substring(eachFile.indexOf("{")+1,eachFile.indexOf(","));
     				Paper eachPaperObj = new Paper(paperKey);
     				StringBuilder stringBuilder = new StringBuilder(eachFile);
@@ -62,9 +63,10 @@ public class BibParser {
     				eachPaperObj.setAbsContent(getPaperInfo(eachFileSegmentList,searchKeyWordArray[7]));
     				result.put(paperKey, eachPaperObj);
     			}else {isErr = true;}
-    		});
+    		});    		
     		}
         catch(Exception ex) {
+        	System.out.println(ex);
         	isErr = true;
         }    	
     }
@@ -80,11 +82,12 @@ public class BibParser {
     	File inputFile = new File(bibfilePath);
         ArrayList<String> fileArrayList = new ArrayList<String>();
     	Scanner sc = new Scanner(inputFile);
-    	sc.useDelimiter(",\\n}");  
+    	sc.useDelimiter(",\\n}\\n");  
     	while(sc.hasNext()) {
     		fileArrayList.add(sc.next());    		
     	}
     	sc.close();
+
     	return fileArrayList;
     }
     public String getPaperInfo(ArrayList<String> eachFileSegmentList,String searchKeyWord){
@@ -100,7 +103,7 @@ public class BibParser {
     public ArrayList<String>getPaperAuthorsOrKeyword(ArrayList<String> eachFileSegmentList,String searchKeyWord){
     	String paperInfo = null;
     	String[] tempInfoArray = null;
-    	ArrayList<String> authorArrayList = new ArrayList<String>();
+    	ArrayList<String> infoArrayList = new ArrayList<String>();
     	for (int i =0;i<eachFileSegmentList.size();i++) {
     		String eachFileSegment = eachFileSegmentList.get(i);
     		if (eachFileSegment.contains(searchKeyWord)) {
@@ -111,10 +114,13 @@ public class BibParser {
     				tempInfoArray = paperInfo.split(",");
     			}
     			for (String tempAuthor:tempInfoArray) {
-    				authorArrayList.add(tempAuthor);
+    				infoArrayList.add(tempAuthor);
     			}
     		}
     	}
-    	return authorArrayList;
+    	return infoArrayList;
+    }
+    public HashMap<String, Paper> getResult(){
+    	return result;
     }
 }

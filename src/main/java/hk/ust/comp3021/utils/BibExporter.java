@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class BibExporter {
-    private HashMap<String, Paper> papers;
+    private HashMap<String, Paper> papers; //contain the target paper need to download
 
     private String bibFile;
 
@@ -51,11 +51,9 @@ public class BibExporter {
     	try {
     		tokenizedString = generate();
     		File file = new File(this.bibFile);
-    		if (!file.exists()) {
-    			PrintWriter writer = new PrintWriter(file);
-    			writer.print(tokenizedString);
-    			writer.close();
-    		}
+			PrintWriter writer = new PrintWriter(file);
+			writer.print(tokenizedString);
+			writer.close();
     	}catch(Exception ex) {
         	isErr = true;
         }  
@@ -70,6 +68,5 @@ public class BibExporter {
      * (3) changing the modifiers of the fields and methods, e.g., changing a modifier from "private" to "public"
      */
     public void yourMethod() {
-
     }
 }
