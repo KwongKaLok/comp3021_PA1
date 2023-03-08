@@ -243,37 +243,46 @@ public class MiniMendeleyEngine {
      */
     public ArrayList<Paper> processSearchPaperAction(User curUser, SearchPaperAction action) {
         //TODO: complete the definition of the method `processSearchPaperAction`
-    	actions.add(action);
-    	ArrayList<Paper> paperList = new ArrayList<Paper>();
+//    	ArrayList<Paper> paperList = new ArrayList<Paper>();
         try {
         	if(action.getKind() == SearchKind.ID) {
         		for(Map.Entry<String, Paper>paper:paperBase.entrySet()){
-        			if (paper.getValue().getPaperID().contains(action.getSearchContent())) {
-        				paperList.add(paper.getValue());
+        			if (paper.getValue().getPaperID().equals(action.getSearchContent())) {
+        				action.appendToActionResult(paper.getValue());
         			}
         		}
         	}else if(action.getKind() == SearchKind.AUTHOR) {
         		for(Map.Entry<String, Paper>paper:paperBase.entrySet()){
-        			if (paper.getValue().getAuthors().contains(action.getSearchContent())) {
-        				paperList.add(paper.getValue());
-        			}
+        			paper.getValue().getAuthors().forEach((author)->{
+        				if (author.contains(action.getSearchContent())) {
+        					action.appendToActionResult(paper.getValue());
+            			}
+        			});
+        			
         		}
         	}else if(action.getKind() == SearchKind.JOURNAL) {
         		for(Map.Entry<String, Paper>paper:paperBase.entrySet()){
-        			if (paper.getValue().getJournal().contains(action.getSearchContent())) {
-        				paperList.add(paper.getValue());
+        			if(paper.getValue().getJournal() !=null) {
+        				if (paper.getValue().getJournal().equals(action.getSearchContent())) {
+            				action.appendToActionResult(paper.getValue());	
+            			}
         			}
+        			
         		}
         	}else if(action.getKind() == SearchKind.TITLE) {
         		for(Map.Entry<String, Paper>paper:paperBase.entrySet()){
-        			if (paper.getValue().getTitle().contains(action.getSearchContent())) {
-        				paperList.add(paper.getValue());
+        			if(paper.getValue().getTitle() !=null) {
+        				if (paper.getValue().getTitle().equals(action.getSearchContent())) {
+            				action.appendToActionResult(paper.getValue());
+            			}
         			}
         		}
         	}
-        	return paperList;
+        	return action.getActionResult();
         }catch(Exception e){
         	return null;
+        }finally {
+        	actions.add(action);
         }
     }
 
