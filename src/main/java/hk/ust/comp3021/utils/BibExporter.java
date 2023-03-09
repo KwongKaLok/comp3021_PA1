@@ -35,6 +35,7 @@ public class BibExporter {
       }
       return tokenizedString;
     }
+    isErr = true;
     return null;
   }
 
@@ -49,10 +50,14 @@ public class BibExporter {
     String tokenizedString;
     try {
       tokenizedString = generate();
-      File file = new File(this.bibFile);
-      PrintWriter writer = new PrintWriter(file);
-      writer.print(tokenizedString);
-      writer.close();
+      if (tokenizedString != null) {
+        File file = new File(this.bibFile);
+        PrintWriter writer = new PrintWriter(file);
+        writer.print(tokenizedString);
+        writer.close();
+      } else {
+        isErr = true;
+      }
     } catch (Exception ex) {
       isErr = true;
     }
@@ -65,6 +70,7 @@ public class BibExporter {
    * signature of `public` methods (3) changing the modifiers of the fields and
    * methods, e.g., changing a modifier from "private" to "public"
    */
-  public void yourMethod() {
+  public boolean getIsErr() {
+    return isErr;
   }
 }

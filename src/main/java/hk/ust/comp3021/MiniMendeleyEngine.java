@@ -176,19 +176,26 @@ public class MiniMendeleyEngine {
    */
   public void processDownloadPaperAction(User curUser, DownloadPaperAction action) {
     // TODO: complete the definition of the method `processDownloadPaperAction`
-    /// Users/kalokkwong/comp_3021/COMP3021-2023Spring-PA1-Skeleton/resources/bibdata/PADownloadTest.bib
     try {
       HashMap<String, Paper> targetPapersHash = new HashMap<String, Paper>();
-      action.getPaper().forEach((paperID) -> {
-        targetPapersHash.put(paperID, paperBase.get(paperID));
-      });
+      for (int i = 0; i < action.getPaper().size(); i++) {
+        String paperID = action.getPaper().get(i);
+        if (paperBase.containsKey(paperID)) {
+          targetPapersHash.put(paperID, paperBase.get(paperID));
+        } else {
+          action.setActionResult(false);
+          throw new Exception();
+        }
+      }
       BibExporter bibExporter = new BibExporter(targetPapersHash, action.getDownloadPath());
       bibExporter.export();
-      action.setActionResult(true);
+      if (!bibExporter.getIsErr()) {
+        action.setActionResult(true);
+      } else {
+        action.setActionResult(false);
+      }
     } catch (Exception e) {
       action.setActionResult(false);
-      System.out.println(e);
-      System.out.println("error in processDownloadPaperAction");
     } finally {
       actions.add(action);
     }
@@ -214,25 +221,30 @@ public class MiniMendeleyEngine {
     try {
       BibParser bibParser = new BibParser(action.getBibfilePath());
       bibParser.parse();
-      HashMap<String, Paper> tempHash = new HashMap<String, Paper>();
-      tempHash = bibParser.getResult();
-      paperBase.putAll(tempHash);
-      for (Map.Entry<String, Paper> paper : tempHash.entrySet()) {
-        action.getUploadedPapers().put(paper.getKey(), paper.getValue()); // Add paper to 'paperBase'
-        paper.getValue().getAuthors().forEach((author) -> { // Add author to 'researchers'
-          for (int i = 0; i < researchers.size(); i++) { // Check the author is in 'researchers'
-            Researcher eachResearcher = researchers.get(i);
-            if (!eachResearcher.getName().contains(author)) {
-              Researcher researcher = new Researcher("Researcher_" + researchers.size(), author);
-              researchers.add(researcher);
-              researcher.updatePaperList(paper.getValue());
-            } else {
-              eachResearcher.updatePaperList(paper.getValue());
+      if (!bibParser.getIsErr()) {
+        HashMap<String, Paper> tempHash = new HashMap<String, Paper>();
+        tempHash = bibParser.getResult();
+        paperBase.putAll(tempHash);
+        for (Map.Entry<String, Paper> paper : tempHash.entrySet()) {
+          action.getUploadedPapers().put(paper.getKey(), paper.getValue()); // Add paper to 'paperBase'
+          paper.getValue().getAuthors().forEach((author) -> { // Add author to 'researchers'
+            for (int i = 0; i < researchers.size(); i++) { // Check the author is in 'researchers'
+              Researcher eachResearcher = researchers.get(i);
+              if (!eachResearcher.getName().contains(author)) {
+                Researcher researcher = new Researcher("Researcher_" + researchers.size(), author);
+                researchers.add(researcher);
+                researcher.updatePaperList(paper.getValue());
+              } else {
+                eachResearcher.updatePaperList(paper.getValue());
+              }
             }
-          }
-        });
+          });
+        }
+        action.setActionResult(true);
+      } else {
+        action.setActionResult(false);
       }
-      action.setActionResult(true);
+
     } catch (Exception e) {
       action.setActionResult(false);
     } finally {

@@ -24,6 +24,7 @@ public class BibParser {
    *
    * Please note that the string after @ is exactly the key of the paper. For
    * example:
+   * 
    * @article{Bourdoncle1993, abstract = {Abstract interpretation ...}, author =
    *                          {François Bourdoncle}, isbn = {9783540573166}, issn
    *                          = {16113349}, journal = {Lecture Notes in Computer
@@ -46,30 +47,31 @@ public class BibParser {
         "url = {", "abstract = {" };
     try {
       allFileArrayList = loadBibFile(this.bibfilePath);
-      allFileArrayList.forEach((eachFile) -> {
-        if (eachFile.contains("@") && !isErr) {
-          String paperKey = eachFile.substring(eachFile.indexOf("{") + 1, eachFile.indexOf(","));
-          Paper eachPaperObj = new Paper(paperKey);
-          StringBuilder stringBuilder = new StringBuilder(eachFile);
-          stringBuilder.delete(eachFile.indexOf("@"), eachFile.indexOf(",") + 1); // remove key
-          ArrayList<String> eachFileSegmentList = new ArrayList<String>(
-              Arrays.asList(stringBuilder.toString().split("},"))); // Break each information into a single element
-          eachPaperObj.setDoi(getPaperInfo(eachFileSegmentList, searchKeyWordArray[0]));
-          eachPaperObj.setAuthors(getPaperAuthorsOrKeyword(eachFileSegmentList, searchKeyWordArray[1]));
-          eachPaperObj.setTitle(getPaperInfo(eachFileSegmentList, searchKeyWordArray[2]));
-          eachPaperObj.setJournal(getPaperInfo(eachFileSegmentList, searchKeyWordArray[3]));
-          eachPaperObj.setKeywords(getPaperAuthorsOrKeyword(eachFileSegmentList, searchKeyWordArray[4]));
-          eachPaperObj
-              .setYear(Integer.parseInt(getPaperInfo(eachFileSegmentList, searchKeyWordArray[5]).substring(0, 4)));
-          eachPaperObj.setUrl(getPaperInfo(eachFileSegmentList, searchKeyWordArray[6]));
-          eachPaperObj.setAbsContent(getPaperInfo(eachFileSegmentList, searchKeyWordArray[7]));
-          result.put(paperKey, eachPaperObj);
-        } else {
-          isErr = true;
-        }
-      });
+      if (allFileArrayList.size() == 0) {
+        isErr = true;
+      } else {
+        allFileArrayList.forEach((eachFile) -> {
+          if (eachFile.contains("@")) {
+            String paperKey = eachFile.substring(eachFile.indexOf("{") + 1, eachFile.indexOf(","));
+            Paper eachPaperObj = new Paper(paperKey);
+            StringBuilder stringBuilder = new StringBuilder(eachFile);
+            stringBuilder.delete(eachFile.indexOf("@"), eachFile.indexOf(",") + 1); // remove key
+            ArrayList<String> eachFileSegmentList = new ArrayList<String>(
+                Arrays.asList(stringBuilder.toString().split("},"))); // Break each information into a single element
+            eachPaperObj.setDoi(getPaperInfo(eachFileSegmentList, searchKeyWordArray[0]));
+            eachPaperObj.setAuthors(getPaperAuthorsOrKeyword(eachFileSegmentList, searchKeyWordArray[1]));
+            eachPaperObj.setTitle(getPaperInfo(eachFileSegmentList, searchKeyWordArray[2]));
+            eachPaperObj.setJournal(getPaperInfo(eachFileSegmentList, searchKeyWordArray[3]));
+            eachPaperObj.setKeywords(getPaperAuthorsOrKeyword(eachFileSegmentList, searchKeyWordArray[4]));
+            eachPaperObj
+                .setYear(Integer.parseInt(getPaperInfo(eachFileSegmentList, searchKeyWordArray[5]).substring(0, 4)));
+            eachPaperObj.setUrl(getPaperInfo(eachFileSegmentList, searchKeyWordArray[6]));
+            eachPaperObj.setAbsContent(getPaperInfo(eachFileSegmentList, searchKeyWordArray[7]));
+            result.put(paperKey, eachPaperObj);
+          }
+        });
+      }
     } catch (Exception ex) {
-      System.out.println(ex);
       isErr = true;
     }
   }
@@ -84,13 +86,14 @@ public class BibParser {
   public ArrayList<String> loadBibFile(String bibfilePath) throws Exception {
     File inputFile = new File(bibfilePath);
     ArrayList<String> fileArrayList = new ArrayList<String>();
-    Scanner sc = new Scanner(inputFile);
-    sc.useDelimiter(",\\n}\\n");
-    while (sc.hasNext()) {
-      fileArrayList.add(sc.next());
+    if (inputFile.exists()) {
+      Scanner sc = new Scanner(inputFile);
+      sc.useDelimiter(",\\n}\\n");
+      while (sc.hasNext()) {
+        fileArrayList.add(sc.next());
+      }
+      sc.close();
     }
-    sc.close();
-
     return fileArrayList;
   }
 
@@ -128,5 +131,8 @@ public class BibParser {
 
   public HashMap<String, Paper> getResult() {
     return result;
+  }
+  public boolean getIsErr() {
+    return isErr;
   }
 }
