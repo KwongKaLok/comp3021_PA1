@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="hk.ust.comp3021.actions.DownloadPaperActionTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2023-03-09T04:29:53" hostname="KadeAir-4" time="0.019">
+<testsuite name="hk.ust.comp3021.actions.DownloadPaperActionTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2023-03-09T05:47:00" hostname="KadeAir-4" time="0.018">
   <properties/>
-  <testcase name="testDownloadPaperAction_ActionsSize()" classname="hk.ust.comp3021.actions.DownloadPaperActionTest" time="0.012"/>
+  <testcase name="testDownloadPaperAction_ActionsSize()" classname="hk.ust.comp3021.actions.DownloadPaperActionTest" time="0.011"/>
   <testcase name="testDownloadPaperAction_FileExist()" classname="hk.ust.comp3021.actions.DownloadPaperActionTest" time="0.007"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="hk.ust.comp3021.actions.SearchPaperActionTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2023-03-09T04:29:53" hostname="KadeAir-4" time="0.022">
+<testsuite name="hk.ust.comp3021.actions.SearchPaperActionTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2023-03-09T05:47:00" hostname="KadeAir-4" time="0.021">
   <properties/>
   <testcase name="testSearchPaperAction_SearchByAuthor()" classname="hk.ust.comp3021.actions.SearchPaperActionTest" time="0.007"/>
-  <testcase name="testSearchPaperAction_SearchByTitle()" classname="hk.ust.comp3021.actions.SearchPaperActionTest" time="0.007"/>
+  <testcase name="testSearchPaperAction_SearchByTitle()" classname="hk.ust.comp3021.actions.SearchPaperActionTest" time="0.006"/>
   <testcase name="testSearchPaperAction_SearchByJournal()" classname="hk.ust.comp3021.actions.SearchPaperActionTest" time="0.007"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>

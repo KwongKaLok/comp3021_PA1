@@ -24,7 +24,6 @@ public class BibParser {
    *
    * Please note that the string after @ is exactly the key of the paper. For
    * example:
-   * 
    * @article{Bourdoncle1993, abstract = {Abstract interpretation ...}, author =
    *                          {François Bourdoncle}, isbn = {9783540573166}, issn
    *                          = {16113349}, journal = {Lecture Notes in Computer
@@ -132,6 +131,7 @@ public class BibParser {
   public HashMap<String, Paper> getResult() {
     return result;
   }
+
   public boolean getIsErr() {
     return isErr;
   }

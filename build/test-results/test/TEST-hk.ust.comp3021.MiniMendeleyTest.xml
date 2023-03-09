@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="hk.ust.comp3021.MiniMendeleyTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2023-03-09T04:29:53" hostname="KadeAir-4" time="0.035">
+<testsuite name="hk.ust.comp3021.MiniMendeleyTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2023-03-09T05:47:00" hostname="KadeAir-4" time="0.035">
   <properties/>
   <testcase name="testUserRegister()" classname="hk.ust.comp3021.MiniMendeleyTest" time="0.035"/>
   <system-out><![CDATA[]]></system-out>
